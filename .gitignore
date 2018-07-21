@@ -2,6 +2,7 @@
 /.idea
 /.settings
 /target
+/security
 .classpath
 .project
 *.iml

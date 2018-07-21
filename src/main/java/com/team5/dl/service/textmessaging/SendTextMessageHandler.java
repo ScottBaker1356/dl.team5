@@ -1,4 +1,4 @@
-package com.team5.dl.sms;
+package com.team5.dl.service.textmessaging;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -11,52 +11,50 @@ import com.amazonaws.services.sns.model.MessageAttributeValue;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
 import com.team5.dl.JavaJsonSerializationController;
+import com.team5.dl.service.ServiceHandler;
 import com.team5.dl.domain.TextMessage;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
+import com.team5.dl.httpclient.HttpRequest;
+import com.team5.dl.httpclient.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class SMSServiceProcessor implements Processor {
+public class SendTextMessageHandler extends ServiceHandler {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(SMSServiceProcessor.class);
+    private String message;
+    private List<String> phoneNumbers;
 
-    @Override
-    public void process(Exchange exchange) throws Exception {
-
-        LOGGER.debug("Entering " + this.getClass().getName());
-
-        String messageBody = exchange.getIn().getBody(String.class);
-        TextMessage textMessage = JavaJsonSerializationController.deserialize(messageBody, TextMessage.class);
-
-        String message = textMessage.getMessage();
-        for(String phoneNumber : textMessage.getPhoneNumbers()) {
-            send(message, phoneNumber);
-        }
-
-        exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
-
-        LOGGER.debug("Leaving " + this.getClass().getName());
-
+    public SendTextMessageHandler(HttpRequest httpRequest) {
+        super(httpRequest);
+        String body = httpRequest.getBody().get();
+        TextMessage textMessage = JavaJsonSerializationController.deserialize(body, TextMessage.class);
+        message = textMessage.getMessage();
+        phoneNumbers = textMessage.getPhoneNumbers();
     }
 
-    public static void send(String message, String phoneNumber) {
+    @Override
+    public HttpResponse run() {
 
+        AWSCredentialsProvider credentialsProvider = getCredentialsProvider();
 
+        for(String phoneNumber : phoneNumbers) {
+            send(message, phoneNumber, credentialsProvider);
+        }
 
-        AwsClientBuilder snsClientBuilder = AmazonSNSClientBuilder.standard();
-        AWSCredentialsProvider credentialsProvider = new AWSCredentialsProvider() {
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setHttpResponseCode(200);
+        //httpResponse.getHeaders().put("Content-Type", "application/json");
+        return httpResponse;
+    }
+
+    private AWSCredentialsProvider getCredentialsProvider() {
+        return new AWSCredentialsProvider() {
             @Override
             public AWSCredentials getCredentials() {
-                //dlSvcAcct
-                String accessKey = "AKIAJQ3PWBSEYGEDIUEQ";
-                String secretKey = "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";
-                BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
-
-                return credentials;
+                return new BasicAWSCredentials(accessKey, secretKey);
             }
 
             @Override
@@ -64,9 +62,14 @@ public class SMSServiceProcessor implements Processor {
 
             }
         };
+    }
 
+    private void send(String message, String phoneNumber, AWSCredentialsProvider credentialsProvider) {
+
+        AwsClientBuilder snsClientBuilder = AmazonSNSClientBuilder.standard();
         snsClientBuilder.setCredentials(credentialsProvider);
-        snsClientBuilder.setEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("sns.us-east-1.amazonaws.com", "us-east-1"));
+        snsClientBuilder.setEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(serviceEndpoint, signingRegion));
+
         AmazonSNS snsClient = (AmazonSNS)snsClientBuilder.build();
 
         Map<String, MessageAttributeValue> smsAttributes = new HashMap<String, MessageAttributeValue>();
@@ -85,14 +88,14 @@ public class SMSServiceProcessor implements Processor {
         sendSMSMessage((AmazonSNSClient)snsClient, message, phoneNumber, smsAttributes);
     }
 
-    public static void sendSMSMessage(AmazonSNSClient snsClient, String message,
+    private static void sendSMSMessage(AmazonSNSClient snsClient, String message,
                                       String phoneNumber, Map<String, MessageAttributeValue> smsAttributes) {
         PublishResult result = snsClient.publish(new PublishRequest()
                 .withMessage(message)
                 .withPhoneNumber(phoneNumber)
                 .withMessageAttributes(smsAttributes)
         );
-        System.out.println(result); // Prints the message ID.
+        //System.out.println(result); // Prints the message ID.
     }
 
 }

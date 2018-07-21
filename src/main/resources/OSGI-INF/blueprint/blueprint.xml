@@ -6,12 +6,16 @@
     <bean id="routeLogger" class="com.team5.dl.ProcessLogger"/>
     <bean id="exceptionHandler" class="com.team5.dl.ExceptionHandler"/>
 
-    <bean id="smsServiceProcessor" class="com.team5.dl.sms.SMSServiceProcessor"/>
+    <bean id="serviceProcessor" class="com.team5.dl.CamelProcessor"/>
+
+    <bean id="jasypt" class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+        <property name="password" value="qLVx'hf=dLNP!LQR"/>
+    </bean>
 
     <camelContext id="team5DomainLayerCamelContext" useMDCLogging="true"
                   xmlns="http://camel.apache.org/schema/blueprint">
 
-        <propertyPlaceholder id="camelContextConfigProps" location="app.properties"/>
+        <propertyPlaceholder id="camelContextConfigProps" location="app.properties" propertiesParserRef="jasypt"/>
 
         <onException>
             <exception>java.lang.Exception</exception>
@@ -25,23 +29,40 @@
             <dataFormatProperty key="prettyPrint" value="true"/>
         </restConfiguration>
 
-        <rest path="/domain-layer/send-text-message">
-            <post uri="/">
-                <to uri="direct:smsServiceProcessor"/>
-            </post>
-            <get uri="/">
-                <to uri="direct:serviceProcessor"/>
-            </get>
+        <rest path="/domain-layer">
             <post uri="/notify-of-event">
                 <to uri="direct:serviceProcessor"/>
             </post>
-
+            <post uri="/send-text-message">
+                <to uri="direct:serviceProcessor"/>
+            </post>
+            <get uri="/sensor-event-preferences/{id}">
+                <to uri="direct:serviceProcessor"/>
+            </get>
+            <put uri="/sensor-event-preferences/{id}">
+                <to uri="direct:serviceProcessor"/>
+            </put>
         </rest>
 
-        <route id="smsServiceProcessor" streamCache="true">
-            <from uri="direct:smsServiceProcessor"/>
+        <route id="serviceProcessor" streamCache="true">
+            <from uri="direct:serviceProcessor"/>
             <process ref="routeLogger"/>
-            <process ref="smsServiceProcessor"/>
+            <setProperty propertyName="karaf.host">
+                <simple>{{karaf.host}}</simple>
+            </setProperty>
+            <setProperty propertyName="aws.access.key">
+                <simple>{{aws.access.key}}</simple>
+            </setProperty>
+            <setProperty propertyName="aws.secret.key">
+                <simple>{{aws.secret.key}}</simple>
+            </setProperty>
+            <setProperty propertyName="aws.service.endpoint">
+                <simple>{{aws.service.endpoint}}</simple>
+            </setProperty>
+            <setProperty propertyName="aws.signing.region">
+                <simple>{{aws.signing.region}}</simple>
+            </setProperty>
+            <process ref="serviceProcessor"/>
             <process ref="routeLogger"/>
         </route>
 

@@ -1,17 +1,17 @@
 package com.team5.dl.domain;
 
-public enum EventTypeCode {
+public enum SensorEventTypeCode {
     WATER_PRESENT_NOTIFICATION("WaterPresentNotification"),
     TEMPERATURE_UPDATE_NOTIFICATION("TemperatureUpdateNotificaiton");
 
     private String eventName;
 
-    EventTypeCode(String eventName) {
+    SensorEventTypeCode(String eventName) {
         this.eventName = eventName;
     }
 
-    public static EventTypeCode codeFor(String eventName) {
-        for (EventTypeCode code : EventTypeCode.values()) {
+    public static SensorEventTypeCode codeFor(String eventName) {
+        for (SensorEventTypeCode code : SensorEventTypeCode.values()) {
             if (code.getEventName().equals(eventName)) {
                 return code;
             }

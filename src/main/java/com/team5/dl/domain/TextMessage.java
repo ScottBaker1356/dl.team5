@@ -1,6 +1,7 @@
 
 package com.team5.dl.domain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class TextMessage {
 
     @JsonProperty("phoneNumbers")
-    private List<String> phoneNumbers = null;
+    private List<String> phoneNumbers = new ArrayList<>();
     @JsonProperty("subject")
     private String subject;
     @JsonProperty("message")

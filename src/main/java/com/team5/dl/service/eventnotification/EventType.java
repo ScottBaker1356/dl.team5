@@ -1,4 +1,4 @@
-package com.team5.dl;
+package com.team5.dl.service.eventnotification;
 
 public enum EventType {
 
