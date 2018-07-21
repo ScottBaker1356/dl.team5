@@ -29,6 +29,12 @@
             <post uri="/">
                 <to uri="direct:smsServiceProcessor"/>
             </post>
+            <get uri="/">
+                <to uri="direct:serviceProcessor"/>
+            </get>
+            <post uri="/notify-of-event">
+                <to uri="direct:serviceProcessor"/>
+            </post>
 
         </rest>
 
