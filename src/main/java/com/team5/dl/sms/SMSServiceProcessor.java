@@ -1,4 +1,4 @@
-package com.team5.dl;
+package com.team5.dl.sms;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -10,6 +10,7 @@ import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.MessageAttributeValue;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
+import com.team5.dl.JavaJsonSerializationController;
 import com.team5.dl.domain.TextMessage;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -30,7 +31,11 @@ public class SMSServiceProcessor implements Processor {
 
         String messageBody = exchange.getIn().getBody(String.class);
         TextMessage textMessage = JavaJsonSerializationController.deserialize(messageBody, TextMessage.class);
-        send(textMessage);
+
+        String message = textMessage.getMessage();
+        for(String phoneNumber : textMessage.getPhoneNumbers()) {
+            send(message, phoneNumber);
+        }
 
         exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
 
@@ -38,7 +43,7 @@ public class SMSServiceProcessor implements Processor {
 
     }
 
-    public static void send(TextMessage textMessage) {
+    public static void send(String message, String phoneNumber) {
 
 
 
@@ -64,8 +69,6 @@ public class SMSServiceProcessor implements Processor {
         snsClientBuilder.setEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("sns.us-east-1.amazonaws.com", "us-east-1"));
         AmazonSNS snsClient = (AmazonSNS)snsClientBuilder.build();
 
-        String message = textMessage.getMessage();
-        String phoneNumber = textMessage.getPhoneNumbers().get(0);
         Map<String, MessageAttributeValue> smsAttributes = new HashMap<String, MessageAttributeValue>();
 
         //<set SMS attributes>
