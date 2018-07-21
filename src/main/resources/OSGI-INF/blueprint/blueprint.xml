@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd        http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+    <bean id="routeLogger" class="com.team5.dl.ProcessLogger"/>
+    <bean id="exceptionHandler" class="com.team5.dl.ExceptionHandler"/>
+
+    <bean id="serviceProcessor" class="com.team5.dl.ServiceProcessor"/>
+
+    <camelContext id="team5DomainLayerCamelContext" useMDCLogging="true"
+                  xmlns="http://camel.apache.org/schema/blueprint">
+
+        <propertyPlaceholder id="camelContextConfigProps" location="app.properties"/>
+
+        <onException>
+            <exception>java.lang.Exception</exception>
+            <handled>
+                <constant>true</constant>
+            </handled>
+            <bean method="process" ref="exceptionHandler"/>
+        </onException>
+
+        <restConfiguration bindingMode="off" component="servlet" contextPath="/api" port="{{jettyport}}">
+            <dataFormatProperty key="prettyPrint" value="true"/>
+        </restConfiguration>
+
+        <rest path="/domain-layer">
+            <get uri="/">
+                <to uri="direct:serviceProcessor"/>
+            </get>
+
+        </rest>
+
+        <route id="serviceProcessor" streamCache="true">
+            <from uri="direct:serviceProcessor"/>
+            <process ref="routeLogger"/>
+            <process ref="serviceProcessor"/>
+            <process ref="routeLogger"/>
+        </route>
+
+    </camelContext>
+
+</blueprint>
