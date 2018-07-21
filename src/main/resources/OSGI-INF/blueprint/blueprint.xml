@@ -6,7 +6,7 @@
     <bean id="routeLogger" class="com.team5.dl.ProcessLogger"/>
     <bean id="exceptionHandler" class="com.team5.dl.ExceptionHandler"/>
 
-    <bean id="smsServiceProcessor" class="com.team5.dl.SMSServiceProcessor"/>
+    <bean id="smsServiceProcessor" class="com.team5.dl.sms.SMSServiceProcessor"/>
 
     <camelContext id="team5DomainLayerCamelContext" useMDCLogging="true"
                   xmlns="http://camel.apache.org/schema/blueprint">

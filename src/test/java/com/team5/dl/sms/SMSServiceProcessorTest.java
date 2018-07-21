@@ -1,5 +1,7 @@
-package com.team5.dl;
+package com.team5.dl.sms;
 
+import com.team5.dl.MockerBuildingUtils;
+import com.team5.dl.sms.SMSServiceProcessor;
 import org.apache.camel.Exchange;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,7 +17,7 @@ public class SMSServiceProcessorTest {
         String body = "" +
                 "{\n" +
                 "  \"phoneNumbers\":[\"+13179194341\"],\n" +
-                "  \"message\": \"This is a test\"\n" +
+                "  \"message\": \"This is a test by Scott Baker\"\n" +
                 "}";
         Exchange exchange = MockerBuildingUtils.buildMockExchange(body);
 
