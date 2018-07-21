@@ -1,4 +1,5 @@
 {
     "sensorId": "1",
-    "eventType": "WaterOnFloor"
+    "eventType": "WaterOnFloor",
+    "measuredValue": "1"
 }

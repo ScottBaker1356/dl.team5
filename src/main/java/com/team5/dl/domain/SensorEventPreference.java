@@ -1,59 +1,78 @@
 
 package com.team5.dl.domain;
 
-import com.fasterxml.jackson.annotation.*;
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonValue;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "channelType",
-    "enabled",
-    "contacts"
+    "location",
+    "eventCode",
+    "minutesBeforeNotificationIssued",
+    "notificationChannels"
 })
 public class SensorEventPreference {
 
-    @JsonProperty("channelType")
-    private String channelType;
-    @JsonProperty("enabled")
-    private Boolean enabled;
-    @JsonProperty("contacts")
-    private List<String> contacts = new ArrayList<String>();
+    @JsonProperty("location")
+    private String location;
+    @JsonProperty("eventCode")
+    private EventCode eventCode;
+    @JsonProperty("minutesBeforeNotificationIssued")
+    private Double minutesBeforeNotificationIssued;
+    @JsonProperty("notificationChannels")
+    private List<NotificationChannel> notificationChannels = new ArrayList<NotificationChannel>();
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("channelType")
-    public String getChannelType() {
-        return channelType;
+    @JsonProperty("location")
+    public String getLocation() {
+        return location;
     }
 
-    @JsonProperty("channelType")
-    public void setChannelType(String channelType) {
-        this.channelType = channelType;
+    @JsonProperty("location")
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    @JsonProperty("enabled")
-    public Boolean getEnabled() {
-        return enabled;
+    @JsonProperty("eventCode")
+    public EventCode getEventCode() {
+        return eventCode;
     }
 
-    @JsonProperty("enabled")
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
+    @JsonProperty("eventCode")
+    public void setEventCode(EventCode eventCode) {
+        this.eventCode = eventCode;
     }
 
-    @JsonProperty("contacts")
-    public List<String> getContacts() {
-        return contacts;
+    @JsonProperty("minutesBeforeNotificationIssued")
+    public Double getMinutesBeforeNotificationIssued() {
+        return minutesBeforeNotificationIssued;
     }
 
-    @JsonProperty("contacts")
-    public void setContacts(List<String> contacts) {
-        this.contacts = contacts;
+    @JsonProperty("minutesBeforeNotificationIssued")
+    public void setMinutesBeforeNotificationIssued(Double minutesBeforeNotificationIssued) {
+        this.minutesBeforeNotificationIssued = minutesBeforeNotificationIssued;
+    }
+
+    @JsonProperty("notificationChannels")
+    public List<NotificationChannel> getNotificationChannels() {
+        return notificationChannels;
+    }
+
+    @JsonProperty("notificationChannels")
+    public void setNotificationChannels(List<NotificationChannel> notificationChannels) {
+        this.notificationChannels = notificationChannels;
     }
 
     @JsonAnyGetter
@@ -68,7 +87,46 @@ public class SensorEventPreference {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("channelType", channelType).append("enabled", enabled).append("contacts", contacts).append("additionalProperties", additionalProperties).toString();
+        return new ToStringBuilder(this).append("location", location).append("eventCode", eventCode).append("minutesBeforeNotificationIssued", minutesBeforeNotificationIssued).append("notificationChannels", notificationChannels).append("additionalProperties", additionalProperties).toString();
+    }
+
+    public enum EventCode {
+
+        WATER_PRESENT_NOTIFICATION("WaterPresentNotification"),
+        TEMPERATURE_UPDATE_NOTIFICATION("TemperatureUpdateNotification");
+        private final String value;
+        private final static Map<String, EventCode> CONSTANTS = new HashMap<String, EventCode>();
+
+        static {
+            for (EventCode c: values()) {
+                CONSTANTS.put(c.value, c);
+            }
+        }
+
+        private EventCode(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return this.value;
+        }
+
+        @JsonValue
+        public String value() {
+            return this.value;
+        }
+
+        @JsonCreator
+        public static EventCode fromValue(String value) {
+            EventCode constant = CONSTANTS.get(value);
+            if (constant == null) {
+                throw new IllegalArgumentException(value);
+            } else {
+                return constant;
+            }
+        }
+
     }
 
 }

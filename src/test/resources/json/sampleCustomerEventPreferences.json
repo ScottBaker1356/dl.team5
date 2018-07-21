@@ -11,9 +11,7 @@
                         {
                             "channelType": "TextMessage",
                             "enabled": true,
-                            "contacts": [
-                                "+13179194341"
-                            ]
+                            "contacts": ["+13179194341"]
                         }
                     ]
                 },

@@ -33,4 +33,53 @@ public abstract class ServiceHandler {
     }
 
     public abstract HttpResponse run();
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getKarafHost() {
+        return karafHost;
+    }
+
+    public void setKarafHost(String karafHost) {
+        this.karafHost = karafHost;
+    }
+
+    public String getAccessKey() {
+        return accessKey;
+    }
+
+    public void setAccessKey(String accessKey) {
+        this.accessKey = accessKey;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
+    }
+
+    public String getServiceEndpoint() {
+        return serviceEndpoint;
+    }
+
+    public void setServiceEndpoint(String serviceEndpoint) {
+        this.serviceEndpoint = serviceEndpoint;
+    }
+
+    public String getSigningRegion() {
+        return signingRegion;
+    }
+
+    public void setSigningRegion(String signingRegion) {
+        this.signingRegion = signingRegion;
+    }
+
 }

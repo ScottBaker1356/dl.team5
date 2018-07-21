@@ -105,16 +105,43 @@
                       "notificationChannels"
                     ],
                     "properties": {
-                      "channelType": {
+                      "location": {
                         "type": "string"
                       },
-                      "enabled": {
-                        "type": "boolean"
+                      "eventCode": {
+                        "type": "string",
+                        "enum": [
+                          "WaterPresentNotification",
+                          "TemperatureUpdateNotification"
+                        ]
                       },
-                      "contacts": {
+                      "minutesBeforeNotificationIssued": {
+                        "type": "number"
+                      },
+                      "notificationChannels": {
                         "type": "array",
                         "items": {
-                          "type": "string"
+                          "type": "object",
+                          "required": [
+                            "channelType",
+                            "enabled",
+                            "contacts"
+                          ],
+                          "properties": {
+                            "channelType": {
+                              "type": "string"
+                            },
+                            "enabled": {
+                              "type": "boolean"
+                            },
+                            "contacts": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          }
+
                         }
                       }
                     }

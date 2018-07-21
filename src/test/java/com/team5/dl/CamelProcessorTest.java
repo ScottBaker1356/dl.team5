@@ -1,8 +1,7 @@
 package com.team5.dl;
 
-import aQute.bnd.osgi.Clazz;
-import com.team5.dl.domain.Customer;
 import com.team5.dl.domain.Customers;
+import com.team5.dl.domain.SensorEvent;
 import org.apache.camel.Exchange;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -16,6 +15,66 @@ public class CamelProcessorTest {
 
     private void execute(Exchange exchange, CamelProcessor sut) throws Exception {
         //sut.process(exchange);
+    }
+
+    @Test
+    public void test_NotifyOfEvent_WaterPresentNotification() throws Exception {
+
+        String body = "" +
+                "{\n" +
+                "    \"sensorId\": \"1\",\n" +
+                "    \"eventTypeCode\": \"WaterPresentNotification\",\n" +
+                "    \"measuredValue\": \"1\"\n" +
+                "}";
+
+        SensorEvent sensorEvent = JavaJsonSerializationController.deserialize(body, SensorEvent.class);
+        assertNotNull(sensorEvent.getSensorId());
+        assertNotNull(sensorEvent.getMeasuredValue());
+        assertNotNull(sensorEvent.getEventTypeCode());
+
+        Exchange exchange = buildMockExchange();
+        exchange.getIn().setHeader(Exchange.HTTP_METHOD, "POST");
+        exchange.getIn().setHeader(Exchange.HTTP_URI, "/api/domain-layer/notify-of-event");
+        setProperties(exchange);
+        exchange.getIn().setBody(body);
+
+        CamelProcessor sut = new CamelProcessor();
+
+        execute(exchange, sut);
+
+        int responseStatusCode = exchange.getOut().getHeader(Exchange.HTTP_RESPONSE_CODE, Integer.class);
+
+        assertEquals(200, responseStatusCode);
+    }
+
+    @Test
+    public void test_NotifyOfEvent_TemperatureUpdateNotification() throws Exception {
+
+        String body = "" +
+                "{\n" +
+                "    \"sensorId\": \"2\",\n" +
+                "    \"eventTypeCode\": \"TemperatureUpdateNotification\",\n" +
+                "    \"measuredValue\": \"37.458\"\n" +
+                "}";
+
+        SensorEvent sensorEvent = JavaJsonSerializationController.deserialize(body, SensorEvent.class);
+        assertNotNull(sensorEvent.getSensorId());
+        assertNotNull(sensorEvent.getMeasuredValue());
+        assertNotNull(sensorEvent.getEventTypeCode());
+
+        Exchange exchange = buildMockExchange();
+        exchange.getIn().setHeader(Exchange.HTTP_METHOD, "POST");
+        exchange.getIn().setHeader(Exchange.HTTP_URI, "/api/domain-layer/notify-of-event");
+        setProperties(exchange);
+        exchange.getIn().setBody(body);
+
+        CamelProcessor sut = new CamelProcessor();
+
+        execute(exchange, sut);
+
+        int responseStatusCode = exchange.getOut().getHeader(Exchange.HTTP_RESPONSE_CODE, Integer.class);
+
+        assertEquals(200, responseStatusCode);
     }
 
     @Test
@@ -94,7 +153,7 @@ public class CamelProcessorTest {
                 "                        {\n" +
                 "                            \"channelType\": \"TextMessage\",\n" +
                 "                            \"enabled\": true,\n" +
-                "                            \"contacts\": [\"3179194341\"]\n" +
+                "                            \"contacts\": [\"+13179194341\"]\n" +
                 "                        }\n" +
                 "                    ]\n" +
                 "                },\n" +
@@ -107,8 +166,7 @@ public class CamelProcessorTest {
                 "                            \"channelType\": \"TextMessage\",\n" +
                 "                            \"enabled\": true,\n" +
                 "                            \"contacts\": [\n" +
-                "                                \"+13179194341\",\n" +
-                "                                \"+15743092414\"\n" +
+                "                                \"+13179194341\"\n" +
                 "                            ]\n" +
                 "                        }\n" +
                 "                    ]\n" +

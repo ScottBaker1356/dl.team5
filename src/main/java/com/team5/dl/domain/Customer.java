@@ -11,26 +11,26 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "sensorEventPreferences",
+    "eventPreferences",
     "customerId"
 })
 public class Customer {
 
-    @JsonProperty("sensorEventPreferences")
-    private List<SensorEventPreference> sensorEventPreferences = new ArrayList<SensorEventPreference>();
+    @JsonProperty("eventPreferences")
+    private List<SensorEventPreference> eventPreferences = new ArrayList<SensorEventPreference>();
     @JsonProperty("customerId")
     private String customerId;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("sensorEventPreferences")
+    @JsonProperty("eventPreferences")
     public List<SensorEventPreference> getSensorEventPreferences() {
-        return sensorEventPreferences;
+        return eventPreferences;
     }
 
-    @JsonProperty("sensorEventPreferences")
-    public void setSensorEventPreferences(List<SensorEventPreference> sensorEventPreferences) {
-        this.sensorEventPreferences = sensorEventPreferences;
+    @JsonProperty("eventPreferences")
+    public void setSensorEventPreferences(List<SensorEventPreference> eventPreference) {
+        this.eventPreferences = eventPreference;
     }
 
     @JsonProperty("customerId")
@@ -55,7 +55,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("sensorEventPreferences", sensorEventPreferences).append("customerId", customerId).append("additionalProperties", additionalProperties).toString();
+        return new ToStringBuilder(this).append("eventPreferences", eventPreferences).append("customerId", customerId).append("additionalProperties", additionalProperties).toString();
     }
 
 }

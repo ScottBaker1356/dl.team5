@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SensorEventPreferencesRetrievalHandler extends ServiceHandler {
 
-    private Map<String, Customer> customerMap = new ConcurrentHashMap<>();
+    private static Map<String, Customer> customerMap = new ConcurrentHashMap<>();
 
     public SensorEventPreferencesRetrievalHandler(HttpRequest httpRequest) {
         super(httpRequest);
@@ -26,7 +26,7 @@ public class SensorEventPreferencesRetrievalHandler extends ServiceHandler {
         return httpResponse;
     }
 
-    private HttpResponse retrieveCustomers() {
+    public static HttpResponse retrieveCustomers() {
         String customersHost = "https://s3-us-west-2.amazonaws.com";
         String customersPath = "/dl.team5.com.customers/customerEventPreferences.json";
 
