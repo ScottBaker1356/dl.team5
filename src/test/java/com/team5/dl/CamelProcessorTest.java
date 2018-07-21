@@ -1,6 +1,8 @@
 package com.team5.dl;
 
 import aQute.bnd.osgi.Clazz;
+import com.team5.dl.domain.Customer;
+import com.team5.dl.domain.Customers;
 import org.apache.camel.Exchange;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -9,9 +11,13 @@ import static com.team5.dl.MockerBuildingUtils.buildMockExchange;
 import static com.team5.dl.Properties.*;
 import static org.junit.Assert.*;
 
+@Ignore
 public class CamelProcessorTest {
 
-    @Ignore
+    private void execute(Exchange exchange, CamelProcessor sut) throws Exception {
+        //sut.process(exchange);
+    }
+
     @Test
     public void test_SendTextMessage() throws Exception {
 
@@ -35,10 +41,6 @@ public class CamelProcessorTest {
         assertEquals(200, responseStatusCode);
     }
 
-    private void execute(Exchange exchange, CamelProcessor sut) throws Exception {
-        //sut.process(exchange);
-    }
-
     private void setProperties(Exchange exchange) {
         String directoryPath = "C:/ifbidev/GIT-REPOS/dl.team5/security";
         String fileName = "keys.json";
@@ -51,15 +53,16 @@ public class CamelProcessorTest {
         exchange.setProperty(AWS_SIGNING_REGION.property(), "us-east-1");
     }
 
-    @Ignore
     @Test
     public void test_SensorEventPreferences() throws Exception {
 
         String customerId = "bfc2983e-e9f9-4585-9f48-94b21fb8cbe5";
         String body = getSensorEventPreferencesRetrievalBody();
+
         Exchange exchange = buildMockExchange();
-        exchange.getIn().setHeader(Exchange.HTTP_METHOD, "POST");
-        exchange.getIn().setHeader(Exchange.HTTP_URI, "/api/domain-layer/sensor-event-preferences/" + customerId);
+        exchange.getIn().setHeader(Exchange.HTTP_METHOD, "GET");
+        String uri = "/api/domain-layer/sensor-event-preferences/" + customerId;
+        exchange.getIn().setHeader(Exchange.HTTP_URI, uri);
         exchange.getIn().setBody(body);
         setProperties(exchange);
         exchange.setProperty(ID.property(), customerId);
@@ -71,6 +74,9 @@ public class CamelProcessorTest {
         int responseStatusCode = exchange.getOut().getHeader(Exchange.HTTP_RESPONSE_CODE, Integer.class);
 
         assertEquals(200, responseStatusCode);
+
+        Customers customers = JavaJsonSerializationController.deserialize(exchange.getOut().getBody(String.class), Customers.class);
+        assertEquals(customerId, customers.getCustomers().get(0).getCustomerId());
     }
 
     private String getSensorEventPreferencesRetrievalBody() {

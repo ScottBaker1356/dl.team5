@@ -2,6 +2,7 @@ package com.team5.dl.service;
 
 import com.team5.dl.service.eventnotification.NotifyOfEventHandler;
 import com.team5.dl.httpclient.*;
+import com.team5.dl.service.eventpreferences.SensorEventPreferencesRetrievalHandler;
 import com.team5.dl.service.textmessaging.SendTextMessageHandler;
 
 public class ServiceHandlerFactory {
@@ -14,6 +15,10 @@ public class ServiceHandlerFactory {
 
         else if (ServiceMarkers.SEND_TEXT_MESSAGE.matches(httpRequest)) {
             return new SendTextMessageHandler(httpRequest);
+        }
+
+        else if (ServiceMarkers.SENSOR_EVENT_PREFERENCES_RETRIEVAL.matches(httpRequest)) {
+            return new SensorEventPreferencesRetrievalHandler(httpRequest);
         }
 
         throw new HttpException("", 503);
@@ -47,7 +52,7 @@ public class ServiceHandlerFactory {
 
         NOTIFY_OF_EVENT("^/api/domain-layer/notify-of-event$"),
         SEND_TEXT_MESSAGE("^/api/domain-layer/send-text-message$"),
-        SENSOR_EVENT_PREFERENCES("^/api/domain-layer/send-text-message/[a-zA-Z0-9]*$"),
+        SENSOR_EVENT_PREFERENCES("^/api/domain-layer/sensor-event-preferences/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"),
 
         ;
 

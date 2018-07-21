@@ -13,8 +13,8 @@ import static com.team5.dl.Properties.*;
 
 public class CamelProcessor implements Processor {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(CamelProcessor.class);
-    private ServiceHandlerFactory serviceHandlerFactory = new ServiceHandlerFactory();
+    private static final Logger LOGGER = LoggerFactory.getLogger(CamelProcessor.class);
+    private static final ServiceHandlerFactory serviceHandlerFactory = new ServiceHandlerFactory();
 
     @Override
     public void process(Exchange exchange) throws Exception {
