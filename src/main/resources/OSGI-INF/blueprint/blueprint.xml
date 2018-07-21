@@ -6,7 +6,7 @@
     <bean id="routeLogger" class="com.team5.dl.ProcessLogger"/>
     <bean id="exceptionHandler" class="com.team5.dl.ExceptionHandler"/>
 
-    <bean id="serviceProcessor" class="com.team5.dl.ServiceProcessor"/>
+    <bean id="smsServiceProcessor" class="com.team5.dl.SMSServiceProcessor"/>
 
     <camelContext id="team5DomainLayerCamelContext" useMDCLogging="true"
                   xmlns="http://camel.apache.org/schema/blueprint">
@@ -25,17 +25,17 @@
             <dataFormatProperty key="prettyPrint" value="true"/>
         </restConfiguration>
 
-        <rest path="/domain-layer">
-            <get uri="/">
-                <to uri="direct:serviceProcessor"/>
-            </get>
+        <rest path="/domain-layer/send-text-message">
+            <post uri="/">
+                <to uri="direct:smsServiceProcessor"/>
+            </post>
 
         </rest>
 
-        <route id="serviceProcessor" streamCache="true">
-            <from uri="direct:serviceProcessor"/>
+        <route id="smsServiceProcessor" streamCache="true">
+            <from uri="direct:smsServiceProcessor"/>
             <process ref="routeLogger"/>
-            <process ref="serviceProcessor"/>
+            <process ref="smsServiceProcessor"/>
             <process ref="routeLogger"/>
         </route>
 
