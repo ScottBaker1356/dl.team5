@@ -1,0 +1,36 @@
+{
+    "customers": [
+        {
+            "customerId": "bfc2983e-e9f9-4585-9f48-94b21fb8cbe5",
+            "eventPreferences": [
+                {
+                    "location": "Basement",
+                    "eventCode": "WaterPresentNotification",
+                    "minutesBeforeNotificationIssued": 120,
+                    "notificationChannels": [
+                        {
+                            "channelType": "TextMessage",
+                            "enabled": true,
+                            "contacts": ["3179194341"]
+                        }
+                    ]
+                },
+                {
+                    "location": "Basement",
+                    "eventCode": "TemperatureUpdateNotification",
+                    "minutesBeforeNotificationIssued": 0,
+                    "notificationChannels": [
+                        {
+                            "channelType": "TextMessage",
+                            "enabled": true,
+                            "contacts": [
+                                "+13179194341",
+                                "+15743092414"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -7,34 +7,7 @@
   },
   "schemes": ["https"],
   "paths": {
-    "/send-text-message": {"post": {
-      "description": "Sends a text message",
-      "consumes": ["application/json"],
-      "parameters": [{
-        "name": "body",
-        "required": true,
-        "in": "body",
-        "schema": {
-          "type": "object",
-          "required": [
-            "phoneNumbers",
-            "message"
-          ],
-          "properties": {
-            "phoneNumbers": {
-              "type": "array",
-              "items": {"type": "string"}
-            },
-            "message": {"type": "string"}
-          }
-        }
-      }],
-      "responses": {
-        "200": {"description": "OK"},
-        "400": {"description": "Bad Request"},
-        "500": {"description": "Internal Server Error"}
-      }
-    }},
+
     "/notify-of-event": {"post": {
       "summary": "Sensor listener notifies service layer that an event occurred",
       "consumes": ["application/json"],
@@ -70,6 +43,153 @@
         "400": {"description": "Bad Request"},
         "500": {"description": "Internal Server Error"}
       }
-    }}
+    }},
+
+    "/send-text-message": {"post": {
+      "description": "Sends a text message",
+      "consumes": ["application/json"],
+      "parameters": [{
+        "name": "body",
+        "required": true,
+        "in": "body",
+        "schema": {
+          "type": "object",
+          "required": [
+            "phoneNumbers",
+            "message"
+          ],
+          "properties": {
+            "phoneNumbers": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "message": {"type": "string"}
+          }
+        }
+      }],
+      "responses": {
+        "200": {"description": "OK"},
+        "400": {"description": "Bad Request"},
+        "500": {"description": "Internal Server Error"}
+      }
+    }},
+
+    "/sensor-event-preferences/{customerId}": {
+      "get": {
+        "description": "Updates a customer's sensor event preferences",
+        "consumes": ["application/json"],
+        "parameters": [{
+          "name": "customerId",
+          "required": true,
+          "in": "path",
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "eventPreferences",
+                "customerId"
+              ],
+              "properties": {
+                "eventPreferences": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "location",
+                      "eventCode",
+                      "minutesBeforeNotificationIssued",
+                      "notificationChannels"
+                    ],
+                    "properties": {
+                      "channelType": {
+                        "type": "string"
+                      },
+                      "enabled": {
+                        "type": "boolean"
+                      },
+                      "contacts": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "customerId": {"type": "string"}
+              }
+            }
+          },
+          "400": {"description": "Not Found"},
+          "404": {"description": "Not Found"},
+          "500": {"description": "Internal Server Error"}
+        }
+      },
+      "put": {
+        "description": "Updates a customer's sensor event preferences",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "name": "customerId",
+            "required": true,
+            "in": "path",
+            "type": "string"
+          },
+          {
+          "name": "body",
+          "required": true,
+          "in": "body",
+          "schema": {
+            "type": "object",
+            "required": [
+              "eventPreferences",
+              "customerId"
+            ],
+            "properties": {
+              "eventPreferences": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "location",
+                    "eventCode",
+                    "minutesBeforeNotificationIssued",
+                    "notificationChannels"
+                  ],
+                  "properties": {
+                    "channelType": {
+                      "type": "string"
+                    },
+                    "enabled": {
+                      "type": "boolean"
+                    },
+                    "contacts": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "customerId": {"type": "string"}
+            }
+          }
+        }
+        ],
+        "responses": {
+          "200": {"description": "OK"},
+          "400": {"description": "Not Found"},
+          "404": {"description": "Not Found"},
+          "500": {"description": "Internal Server Error"}
+        }
+      }
+
+    }
+
   }
 }
