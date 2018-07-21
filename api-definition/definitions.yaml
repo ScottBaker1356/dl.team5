@@ -1,0 +1,3 @@
+definitions:
+  text-message:
+    $ref: ./models/text-message.yaml

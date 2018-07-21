@@ -1,0 +1,13 @@
+{
+  "type" : "object",
+  "required" : ["phoneNumbers", "message"],
+  "properties" : {
+    "phoneNumbers" : {
+      "type" : "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "message" : { "type" : "string" }
+  }
+}
